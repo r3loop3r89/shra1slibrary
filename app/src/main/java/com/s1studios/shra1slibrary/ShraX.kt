@@ -4,7 +4,9 @@ import android.app.Application
 import android.app.ProgressDialog
 import android.content.Context
 import android.util.Log
+import android.widget.EditText
 import android.widget.Toast
+import com.google.android.material.textfield.TextInputLayout
 
 object ShraX {
     var application: Application? = null
@@ -30,7 +32,25 @@ object ShraX {
         progressDialog?.show()
     }
 
-    fun dismissProgressDialog(){
+    fun dismissProgressDialog() {
         progressDialog?.dismiss()
+    }
+
+    fun cantBeEmptyTil(til: TextInputLayout): Boolean {
+        return if (til.editText?.text.toString().trim().isEmpty()) {
+            til.editText?.error = "Can't be empty!"
+            true
+        } else {
+            false
+        }
+    }
+
+    fun cantBeEmptyEt(et: EditText): Boolean {
+        return if (et.text.toString().trim().isEmpty()) {
+            et.error = "Can't be empty!"
+            true
+        } else {
+            false
+        }
     }
 }

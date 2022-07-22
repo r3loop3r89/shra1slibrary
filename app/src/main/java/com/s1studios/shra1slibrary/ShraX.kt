@@ -1,9 +1,12 @@
 package com.s1studios.shra1slibrary
 
 import android.app.Application
+import android.app.Dialog
 import android.app.ProgressDialog
 import android.content.Context
+import android.content.res.Resources
 import android.util.Log
+import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
 import com.google.android.material.textfield.TextInputLayout
@@ -52,5 +55,11 @@ object ShraX {
         } else {
             false
         }
+    }
+
+    fun showDialogProperlyStretched(dialog: Dialog, resources:Resources){
+        dialog.show()
+        val width: Int = resources.displayMetrics.widthPixels
+        dialog.window?.setLayout((7 * width) / 8, ViewGroup.LayoutParams.WRAP_CONTENT)
     }
 }

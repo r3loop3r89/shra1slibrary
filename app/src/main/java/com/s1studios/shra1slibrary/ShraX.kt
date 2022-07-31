@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.res.Resources
 import android.util.Log
 import android.view.ViewGroup
+import android.widget.AutoCompleteTextView
 import android.widget.EditText
 import android.widget.Toast
 import com.google.android.material.textfield.TextInputLayout
@@ -51,6 +52,15 @@ object ShraX {
     fun cantBeEmptyEt(et: EditText): Boolean {
         return if (et.text.toString().trim().isEmpty()) {
             et.error = "Can't be empty!"
+            true
+        } else {
+            false
+        }
+    }
+
+    fun cantBeEmptyActv(actv: AutoCompleteTextView): Boolean {
+        return if (actv.text.toString().trim().isEmpty()) {
+            actv.error = "Can't be empty!"
             true
         } else {
             false

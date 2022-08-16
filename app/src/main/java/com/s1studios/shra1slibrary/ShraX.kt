@@ -1,16 +1,27 @@
 package com.s1studios.shra1slibrary
 
+import android.app.ActivityManager
 import android.app.Application
 import android.app.Dialog
 import android.app.ProgressDialog
 import android.content.Context
+import android.content.Context.ACTIVITY_SERVICE
 import android.content.res.Resources
 import android.util.Log
 import android.view.ViewGroup
 import android.widget.AutoCompleteTextView
 import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.textfield.TextInputLayout
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.FlowCollector
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import kotlin.Int.Companion.MAX_VALUE
 
 object ShraX {
     var application: Application? = null
@@ -71,5 +82,32 @@ object ShraX {
         dialog.show()
         val width: Int = resources.displayMetrics.widthPixels
         dialog.window?.setLayout((7 * width) / 8, ViewGroup.LayoutParams.WRAP_CONTENT)
+    }
+
+
+    fun <T> AppCompatActivity.collectLatestLifeCycleFlow(flow: Flow<T>, collect: suspend (T)->Unit){
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED){
+                flow.collectLatest(collect)
+            }
+        }
+    }
+
+    fun <T> AppCompatActivity.collectLifeCycleFlow(flow: Flow<T>, collect: FlowCollector<T>){
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED){
+                flow.collect(collect)
+            }
+        }
+    }
+
+    fun <T> isMyServiceRunning(clazz:Class<T>):Boolean{
+        val activityManager :ActivityManager = application?.getSystemService(ACTIVITY_SERVICE) as ActivityManager
+        activityManager.getRunningServices(MAX_VALUE).forEach { service->
+            if (clazz.name.equals(service.service.className)){
+                return true
+            }
+        }
+        return false
     }
 }

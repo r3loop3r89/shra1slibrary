@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.AutoCompleteTextView
 import android.widget.EditText
 import android.widget.Toast
+import androidx.annotation.ChecksSdkIntAtLeast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -81,80 +82,112 @@ object ShraX {
         }
     }
 
-    fun showDialogProperlyStretched(dialog: Dialog, resources:Resources){
+    fun showDialogProperlyStretched(dialog: Dialog, resources: Resources) {
         dialog.show()
         val width: Int = resources.displayMetrics.widthPixels
         dialog.window?.setLayout((7 * width) / 8, ViewGroup.LayoutParams.WRAP_CONTENT)
     }
 
 
-    fun <T> AppCompatActivity.collectLatestLifeCycleFlow(flow: Flow<T>, collect: suspend (T)->Unit){
+    fun <T> AppCompatActivity.collectLatestLifeCycleFlow(
+        flow: Flow<T>,
+        collect: suspend (T) -> Unit
+    ) {
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED){
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
                 flow.collectLatest(collect)
             }
         }
     }
 
-    fun <T> AppCompatActivity.collectLifeCycleFlow(flow: Flow<T>, collect: FlowCollector<T>){
+    fun <T> AppCompatActivity.collectLifeCycleFlow(flow: Flow<T>, collect: FlowCollector<T>) {
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED){
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
                 flow.collect(collect)
             }
         }
     }
 
-    fun <T> isMyServiceRunning(clazz:Class<T>):Boolean{
-        val activityManager :ActivityManager = application?.getSystemService(ACTIVITY_SERVICE) as ActivityManager
-        activityManager.getRunningServices(MAX_VALUE).forEach { service->
-            if (clazz.name.equals(service.service.className)){
+    fun <T> isMyServiceRunning(clazz: Class<T>): Boolean {
+        val activityManager: ActivityManager =
+            application?.getSystemService(ACTIVITY_SERVICE) as ActivityManager
+        activityManager.getRunningServices(MAX_VALUE).forEach { service ->
+            if (clazz.name.equals(service.service.className)) {
                 return true
             }
         }
         return false
     }
 
-    fun View.gone(){
+    fun View.gone() {
         this.visibility = View.GONE
     }
 
-    fun View.visible(){
+    fun View.visible() {
         this.visibility = View.VISIBLE
     }
 
-    fun View.invisible(){
+    fun View.invisible() {
         this.visibility = View.INVISIBLE
     }
 
-    fun View.enable(){
+    fun View.enable() {
         this.isEnabled = true
     }
 
-    fun View.disable(){
+    fun View.disable() {
         this.isEnabled = false
     }
 
-    fun sdkVersionOAndBeyond(block:()->Unit) {
+    @ChecksSdkIntAtLeast(api = Build.VERSION_CODES.O, lambda = 0)
+    fun sdkVersionOAndBeyond(block: () -> Unit) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             block()
-        }else{
+        } else {
             logd("Version is below O so will not execute this block")
         }
     }
 
-    fun sdkVersionAndBeyond(versionCode:Int, block:()->Unit) {
+    @ChecksSdkIntAtLeast(api = Build.VERSION_CODES.O, lambda = 0)
+    fun sdkVersionOAndBeyond(block: () -> Unit, elseBlock: () -> Unit) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            block()
+        } else {
+            elseBlock()
+        }
+    }
+
+    @ChecksSdkIntAtLeast(parameter = 0, lambda = 1)
+    fun sdkVersionAndBeyond(versionCode: Int, block: () -> Unit) {
         if (Build.VERSION.SDK_INT >= versionCode) {
             block()
-        }else{
+        } else {
             logd("Version is below $versionCode so will not execute this block")
         }
     }
 
-    fun sdkVersion(versionCode:Int, block:()->Unit) {
+    @ChecksSdkIntAtLeast(parameter = 0, lambda = 1)
+    fun sdkVersionAndBeyond(versionCode: Int, block: () -> Unit, elseBlock: () -> Unit, ) {
+        if (Build.VERSION.SDK_INT >= versionCode) {
+            block()
+        } else {
+            elseBlock()
+        }
+    }
+
+    fun sdkVersion(versionCode: Int, block: () -> Unit) {
         if (Build.VERSION.SDK_INT == versionCode) {
             block()
-        }else{
+        } else {
             logd("Version is not $versionCode, so will not execute this block")
+        }
+    }
+
+    fun sdkVersion(versionCode: Int, block: () -> Unit, elseBlock: () -> Unit, ) {
+        if (Build.VERSION.SDK_INT == versionCode) {
+            block()
+        } else {
+            elseBlock()
         }
     }
 }

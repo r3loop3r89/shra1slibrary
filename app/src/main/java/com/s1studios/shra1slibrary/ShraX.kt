@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Context.ACTIVITY_SERVICE
 import android.content.res.Resources
 import android.util.Log
+import android.view.View
 import android.view.ViewGroup
 import android.widget.AutoCompleteTextView
 import android.widget.EditText
@@ -109,5 +110,17 @@ object ShraX {
             }
         }
         return false
+    }
+
+    fun View.gone(){
+        this.visibility = View.GONE
+    }
+
+    fun View.visible(){
+        this.visibility = View.VISIBLE
+    }
+
+    fun View.invisible(){
+        this.visibility = View.INVISIBLE
     }
 }

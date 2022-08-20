@@ -31,6 +31,7 @@ object ShraX {
 
     fun toast(text: String) {
         Toast.makeText(ShraX.application, text, Toast.LENGTH_SHORT).show()
+        logd("[Toast] : $text")
     }
 
     fun logd(text: String) {

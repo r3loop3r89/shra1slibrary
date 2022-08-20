@@ -7,6 +7,7 @@ import android.app.ProgressDialog
 import android.content.Context
 import android.content.Context.ACTIVITY_SERVICE
 import android.content.res.Resources
+import android.os.Build
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
@@ -131,5 +132,29 @@ object ShraX {
 
     fun View.disable(){
         this.isEnabled = false
+    }
+
+    fun sdkVersionOAndBeyond(block:()->Unit) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            block()
+        }else{
+            logd("Version is below O so will not execute this block")
+        }
+    }
+
+    fun sdkVersionAndBeyond(versionCode:Int, block:()->Unit) {
+        if (Build.VERSION.SDK_INT >= versionCode) {
+            block()
+        }else{
+            logd("Version is below $versionCode so will not execute this block")
+        }
+    }
+
+    fun sdkVersion(versionCode:Int, block:()->Unit) {
+        if (Build.VERSION.SDK_INT == versionCode) {
+            block()
+        }else{
+            logd("Version is not $versionCode, so will not execute this block")
+        }
     }
 }

@@ -20,10 +20,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.textfield.TextInputLayout
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import kotlin.Int.Companion.MAX_VALUE
 
 object ShraX {
@@ -190,4 +190,24 @@ object ShraX {
             elseBlock()
         }
     }
+
+    fun main(work: suspend () -> Unit): Job {
+        return CoroutineScope(Dispatchers.Main).launch {
+            work()
+        }
+    }
+
+    fun io(work: suspend () -> Unit): Job {
+        return CoroutineScope(Dispatchers.IO).launch {
+            work()
+        }
+    }
+
+    fun <T : Any> ioThenMain(bgWork: suspend () -> T, uiWork: suspend (T) -> Unit): Job {
+        return CoroutineScope(Dispatchers.Main).launch {
+            val data = CoroutineScope(Dispatchers.IO).async rt@{ return@rt bgWork() }.await()
+            uiWork(data)
+        }
+    }
+
 }

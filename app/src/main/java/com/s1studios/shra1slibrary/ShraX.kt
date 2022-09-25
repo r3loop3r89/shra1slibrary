@@ -231,9 +231,9 @@ object ShraX {
                 .setPositiveButton("Ok"){_,_->
                     val intent = Intent().apply {
                         action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
-                        data = Uri.parse("package:${application?.packageName}")
+                        data = Uri.parse("package:${context.packageName}")
                     }
-                    application?.startActivity(intent)
+                    context.startActivity(intent)
                 }.show()
         }
     }

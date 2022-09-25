@@ -222,9 +222,9 @@ object ShraX {
         return powerManager.isIgnoringBatteryOptimizations(application?.packageName)
     }
 
-    fun showDisableBatteryOptimizationDialog(message: String) {
+    fun showDisableBatteryOptimizationDialog(context: Context, message: String) {
         if (!isBatteryOptimizationDisabled()){
-            AlertDialog.Builder(application?.applicationContext!!)
+            AlertDialog.Builder(context)
                 .setTitle("Disable Battery Optimization")
                 .setMessage(message)
                 .setCancelable(false)

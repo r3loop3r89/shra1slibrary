@@ -1,13 +1,18 @@
 package com.s1studios.shra1slibrary
 
+import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.app.Application
 import android.app.Dialog
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Context.ACTIVITY_SERVICE
+import android.content.Intent
 import android.content.res.Resources
+import android.net.Uri
 import android.os.Build
+import android.os.PowerManager
+import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +20,7 @@ import android.widget.AutoCompleteTextView
 import android.widget.EditText
 import android.widget.Toast
 import androidx.annotation.ChecksSdkIntAtLeast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -207,6 +213,28 @@ object ShraX {
         return CoroutineScope(Dispatchers.Main).launch {
             val data = CoroutineScope(Dispatchers.IO).async rt@{ return@rt bgWork() }.await()
             uiWork(data)
+        }
+    }
+
+    @SuppressLint("NewApi")
+    fun isBatteryOptimizationDisabled(): Boolean {
+        val powerManager = application?.getSystemService(Context.POWER_SERVICE) as PowerManager
+        return powerManager.isIgnoringBatteryOptimizations(application?.packageName)
+    }
+
+    fun showDisableBatteryOptimizationDialog(message: String) {
+        if (!isBatteryOptimizationDisabled()){
+            AlertDialog.Builder(application?.applicationContext!!)
+                .setTitle("Disable Battery Optimization")
+                .setMessage(message)
+                .setCancelable(false)
+                .setPositiveButton("Ok"){_,_->
+                    val intent = Intent().apply {
+                        action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+                        data = Uri.parse("package:${application?.packageName}")
+                    }
+                    application?.startActivity(intent)
+                }.show()
         }
     }
 
